@@ -6,12 +6,13 @@ public class Enemy : MonoBehaviour
 {
     private Transform playerTransform;
     private int health;
-    [Range(1, 10)]
-    public float chaseSpeed = 3f;
+    public float chaseSpeed = 20f;
+    private Animator animator;
 
     void Awake()
     {
         playerTransform = GameObject.Find("Player").GetComponent<Transform>();
+        animator = GetComponent<Animator>();
     }
 
     // Start is called before the first frame update
@@ -24,6 +25,7 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         MoveToPlayer();
+        FlipTowardsPlayer();
     }
 
     private void MoveToPlayer() {
@@ -40,6 +42,23 @@ public class Enemy : MonoBehaviour
     //         Destroy(other.gameObject);
     //     }
     // }
+
+    private void FlipTowardsPlayer()
+    {
+        Vector3 currentScale = transform.localScale;
+
+        if (playerTransform.position.x > transform.position.x)
+        {
+            animator.SetBool("FacingRight", true);
+        }
+        else
+        {
+            animator.SetBool("FacingRight", false);
+        }
+
+        // Apply the modified scale
+        transform.localScale = currentScale;
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed = 20f;
+    public float speed = 25f;
     private Vector2 targetPosition;
-    private float maxDistance = 10f; // Jarak maksimum peluru
+    private float maxDistance = 20f; // Jarak maksimum peluru
 
     
 

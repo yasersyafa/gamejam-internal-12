@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [Range(1, 10)]
     // Kecepatan pergerakan karakter
-    public float moveSpeed = 5f;
+    public float moveSpeed = 25f;
 
     // Variable untuk menampung input dari pengguna
     private Vector3 movement;
@@ -19,6 +18,8 @@ public class PlayerController : MonoBehaviour
     private Enemy enemy;
     private ShootingManager shootingManager;
 
+    private SpriteRenderer spriteRenderer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,7 +30,7 @@ public class PlayerController : MonoBehaviour
         // initialize health player
         healthManager = GetComponent<HealthManager>();
         shootingManager = GetComponent<ShootingManager>();
-        
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -45,6 +46,27 @@ public class PlayerController : MonoBehaviour
         // Menyimpan nilai input dalam variabel movement
         movement = new Vector3(moveX, moveY, 0f).normalized;
         HandleShooting();
+        FaceMouse();
+    }
+
+    void FaceMouse()
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = transform.position.z; // Menyamakan posisi z
+
+        // Menghitung arah dari player ke mouse 
+        Vector3 direction = mousePosition - transform.position; // Define 'direction' here
+
+        // Membalik sprite jika mouse di sebelah kiri player
+        if (direction.x < 0)
+        {
+            
+            transform.localScale = new Vector3(1f, 1f, 1f);  // Kembalikan ke arah semula
+        }
+        else
+        {
+            transform.localScale = new Vector3(-1f, 1f, 1f); // Balik seluruh player ke kiri
+        }
     }
 
     void HandleShooting() {

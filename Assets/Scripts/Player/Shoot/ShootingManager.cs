@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShootingManager : MonoBehaviour
 {
       // Prefab peluru
-    public Transform firePoint;      // Titik asal peluru (misalnya posisi player)
+    public GameObject firePoint;      // Titik asal peluru (misalnya posisi player)
 
     // Method untuk menangani aksi menembak
     public void Shoot(Vector2 target)
@@ -13,8 +13,9 @@ public class ShootingManager : MonoBehaviour
         // Buat peluru di posisi player
         // GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
         GameObject bullet = ObjectPool.instance.GetPooledObject();
-        if(bullet != null) {
-            bullet.transform.position = firePoint.position;
+        if (bullet != null)
+        {
+            bullet.transform.position = firePoint.transform.position; // Gunakan posisi firePoint
             bullet.SetActive(true);
         }
 

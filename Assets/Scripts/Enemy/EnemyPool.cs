@@ -18,6 +18,7 @@ public class EnemyPool : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(enemyPrefab);
         enemyPool = new List<GameObject>();
         for(int i = 0; i < poolSize; i++) {
             GameObject enemy = Instantiate(enemyPrefab);

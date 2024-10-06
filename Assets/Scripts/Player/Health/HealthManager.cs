@@ -12,6 +12,7 @@ public class HealthManager : MonoBehaviour
     void Start()
     {
         // Set health awal 100
+        playerHealth = GetComponent<HealthSystem>();
         playerHealth = new HealthSystem(100);
     }
 
