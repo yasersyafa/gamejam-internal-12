@@ -17,8 +17,9 @@ public class PlayerController : MonoBehaviour
     private HealthManager healthManager;
     private Enemy enemy;
     private ShootingManager shootingManager;
-
+    public bool canMove = true;
     private SpriteRenderer spriteRenderer;
+    public AudioSource footstepAudioSource;
 
     // Start is called before the first frame update
     void Start()
@@ -47,8 +48,18 @@ public class PlayerController : MonoBehaviour
         movement = new Vector3(moveX, moveY, 0f).normalized;
         HandleShooting();
         FaceMouse();
+        if (canMove && (movement.x != 0 || movement.y != 0))
+        {
+            PlayFootstepSound();
+        }
     }
-
+    void PlayFootstepSound()
+    {
+        if (!footstepAudioSource.isPlaying) // Periksa apakah audio sedang diputar
+        {
+            footstepAudioSource.PlayOneShot(footstepAudioSource.clip);
+        }
+    }
     void FaceMouse()
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -84,7 +95,11 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         // Menggerakkan karakter sesuai input
+        if (canMove)
+        {
         rb.MovePosition(transform.position + movement * moveSpeed * Time.fixedDeltaTime);
+
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other) {

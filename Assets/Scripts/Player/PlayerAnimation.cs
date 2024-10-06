@@ -6,9 +6,15 @@ public class PlayerAnimation : MonoBehaviour
 {
     // Start is called before the first frame update
     private Animator animator;
+    private HealthSystem healthSystem;
+    private HealthManager healthManager;
     void Start()
     {
         animator = GetComponent<Animator>();
+        healthSystem = GetComponent<HealthSystem>(); // Ambil reference HealthSystem
+
+        // Subscribe ke event OnPlayerDeath
+       
     }
 
     // Update is called once per frame
@@ -17,6 +23,8 @@ public class PlayerAnimation : MonoBehaviour
         // Periksa input pergerakan (misalnya, tombol WASD atau arah)
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
+
+      
 
         // Jika player bergerak, trigger animasi "isRun"
         if (moveX != 0 || moveY != 0)
@@ -28,4 +36,6 @@ public class PlayerAnimation : MonoBehaviour
             animator.ResetTrigger("isRun"); // Reset trigger jika player berhenti bergerak
         }
     }
+   
+
 }

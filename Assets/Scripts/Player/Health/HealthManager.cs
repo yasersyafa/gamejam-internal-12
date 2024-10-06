@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class HealthManager : MonoBehaviour
 {
     private HealthSystem playerHealth;
@@ -21,6 +22,7 @@ public class HealthManager : MonoBehaviour
         // Kurangi health player
         playerHealth.DecreaseHealth(damageOnDeathZone);
         Debug.Log("Player terkena DeathZone! Health berkurang. Health sekarang: " + playerHealth.GetHealth());
+        GameObject.Find("Main Camera").GetComponent<CameraShake>().ShakeCamera();
     }
 
     public bool IsPlayerDead()

@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class HealthSystem : MonoBehaviour
 {
     private int health;
+    public event Action OnPlayerDeath;
 
     // constructor
     public HealthSystem(int initialHealth)
@@ -25,6 +27,12 @@ public class HealthSystem : MonoBehaviour
         if (health < 0)
         {
             health = 0;
+            Debug.Log("Player mati!");
+            if (OnPlayerDeath != null)
+            {
+                OnPlayerDeath();
+
+            }
         }
     }
 

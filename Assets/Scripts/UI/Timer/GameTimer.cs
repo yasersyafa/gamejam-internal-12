@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameTimer : MonoBehaviour
 {
@@ -11,18 +12,17 @@ public class GameTimer : MonoBehaviour
     public TextMeshProUGUI highscore;
     private bool isTimerRunning = true;
     public HealthManager playerHealth;
-    public Image blackImage;
     public Animator playerAnimator; // Drag Animator player ke sini
     public float deathAnimationDuration = 1f;
+    public GameObject scoringPanel; // Drag GameObject scoring panel ke sini
+    public Animator scoringPanelAnimator;
+
     // Start is called before the first frame update
     void Start()
     {
         float highscoreTime = PlayerPrefs.GetFloat("Highscore", 0f);
         UpdateHighscoreText(highscoreTime);
-        if (blackImage != null)
-        {
-            blackImage.gameObject.SetActive(false);
-        }
+        
     }
 
     // Update is called once per frame
@@ -38,14 +38,16 @@ public class GameTimer : MonoBehaviour
             {
                 isTimerRunning = false; // Hentikan timer
 
+
                 float currentHighscore = PlayerPrefs.GetFloat("Highscore", 0f);
                 if (timerGame > currentHighscore)
                 {
                     PlayerPrefs.SetFloat("Highscore", timerGame);
                     UpdateHighscoreText(timerGame);
                 }
-
                 StartCoroutine(ShowGameOverPanelAfterDelay(deathAnimationDuration));
+                GetComponent<PlayerController>().canMove = false;
+
             }
         }
     }
@@ -56,32 +58,62 @@ public class GameTimer : MonoBehaviour
         int seconds = Mathf.FloorToInt(timerGame % 60F);
         timerText.text = minutes.ToString("00") + ":" + seconds.ToString("00");
     }
+    IEnumerator SlowDownTime()
+    {
+        float duration = 2f; // Durasi slowdown dalam detik
+        float elapsedTime = 0f;
 
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            Time.timeScale = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+            yield return null;
+        }
+
+        Time.timeScale = 0f; // Pastikan game benar-benar berhenti
+    }
     void UpdateHighscoreText(float highscoreTime)
     {
         int minutes = Mathf.FloorToInt(highscoreTime / 60F);
         int seconds = Mathf.FloorToInt(highscoreTime % 60F);
-        highscore.text = "Highscore: " + minutes.ToString("00") + ":" + seconds.ToString("00");
+        highscore.text = minutes.ToString("00") + ":" + seconds.ToString("00");
     }
-
     IEnumerator ShowGameOverPanelAfterDelay(float delay)
     {
         // Trigger animasi kematian player
-        playerAnimator.SetTrigger("isDead"); // Ganti "isDead" dengan nama trigger di Animator Controller
+        playerAnimator.SetTrigger("isDead");
+
+        StartCoroutine(SlowDownTime()); // Panggil coroutine untuk slow down time
 
         yield return new WaitForSeconds(delay); // Tunggu selama delay
 
-        // Aktifkan black image dan pause game
-        if (blackImage != null)
+        if (scoringPanel != null && scoringPanelAnimator != null)
         {
-            blackImage.gameObject.SetActive(true);
+            scoringPanel.SetActive(true);
+            scoringPanelAnimator.SetTrigger("Scoring");
 
-            // Atur opacity black image (0 = transparan, 1 = opaque)
-            Color imageColor = blackImage.color;
-            imageColor.a = 0.5f; // Contoh: 50% opacity
-            blackImage.color = imageColor;
+            // Pastikan kecepatan animasi scoring panel tetap normal
+            scoringPanelAnimator.speed = 1f;
+
+            // Pindahkan scoring panel ke depan black image
+            scoringPanel.transform.SetAsLastSibling();
+            highscore.gameObject.SetActive(true);
+
         }
+        //if (blackImage != null)
+        //{
+        //    blackImage.gameObject.SetActive(true);
 
-        Time.timeScale = 0f; // Pause game
+        //    // Atur opacity black image
+        //    Color imageColor = blackImage.color;
+        //    imageColor.a = 0.7f; // Contoh: 70% opacity (atur sesuai keinginan)
+        //    blackImage.color = imageColor;
+
+        //    // Pastikan layer black image di atas player
+            
+
+            
+        //}
     }
+
 }
